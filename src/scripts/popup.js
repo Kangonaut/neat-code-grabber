@@ -1,4 +1,5 @@
-const GITHUB_API_URL = "https://api.github.com";
+import { getRemoteFile, createRemoteFile, updateRemoteFile } from "./api.js";
+
 const DEFAULT_PROGRAMMING_LANG = "C++";
 const programmingLanguageExtensions = new Map([
     ["C++", "cpp"],
@@ -39,7 +40,6 @@ function populateProgrammingLanguageSelection() {
         programmingLanguageSelect.appendChild(option);
     }
 }
-
 populateProgrammingLanguageSelection();
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -68,140 +68,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// document.getElementById('uploadCodeButton').addEventListener('click', () => {
-//     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//         chrome.tabs.sendMessage(tabs[0].id, { action: "getEditorContent" }, (response) => {
-//             if (response && response.content) {
-//                 console.log('Editor Content:', response.content);
-//                 uploadCode(response.content);
-//             } else {
-//                 console.error("failed to retrieve editor content");
-//             }
-//         });
-//     });
-// });
+function displayProblem(problem) {
+    const problemIdElem = document.getElementById("problemId");
+    problemIdElem.textContent = problem.id;
 
-async function getRemoteFile(filename) {
-    const storage = await chrome.storage.sync.get({ githubApiToken: null, githubName: null, githubRepo: null });
-
-    const response = await fetch(
-        `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${filename}`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${storage.githubApiToken}`,
-            },
-        }
-    );
-
-    if (response.status === 200) {
-        const body = await response.json();
-        return body;
-    } else if (response.status === 404) {
-        return null;
-    } else {
-        console.error(`error occurred while trying to fetch file: ${response.status} - ${response.statusText}`)
-    }
-}
-
-async function createRemoteFile(filename, content) {
-    const storage = await chrome.storage.sync.get({ githubApiToken: null, githubName: null, githubEmail: null, githubRepo: null });
-
-    // encode the content using base64
-    const encodedContent = btoa(content);
-    const body = {
-        message: `add ${filename}`,
-        committer: {
-            name: storage.githubName,
-            email: storage.githubEmail,
-        },
-        content: encodedContent,
-    };
-
-    const response = await fetch(
-        `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${filename}`,
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${storage.githubApiToken}`,
-            },
-            body: JSON.stringify(body),
-        }
-    );
-
-    if (response.status !== 201) {
-        console.error(`an error occurred while trying to create file: ${response.status} - ${response.statusText}`);
-    }
-}
-
-async function updateRemoteFile(filename, content, sha) {
-    const storage = await chrome.storage.sync.get({ githubApiToken: null, githubName: null, githubEmail: null, githubRepo: null });
-
-    // encode the content using base64
-    const encodedContent = btoa(content);
-    const body = {
-        message: `add ${filename}`,
-        committer: {
-            name: storage.githubName,
-            email: storage.githubEmail,
-        },
-        content: encodedContent,
-        sha: sha,
-    };
-
-    const response = await fetch(
-        `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${filename}`,
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${storage.githubApiToken}`,
-            },
-            body: JSON.stringify(body),
-        }
-    );
-
-    if (response.status !== 200) {
-        console.error(`an error occurred while trying to update file: ${response.status} - ${response.statusText}`);
-    }
-}
-
-async function uploadCode(code) {
-    const encodedCode = btoa(code);
-    console.log(encodedCode);
-
-    const storage = await chrome.storage.sync.get({ githubApiToken: null, githubName: null, githubEmail: null, githubRepo: null });
-
-    const problemId = 1117;
-    if (code) {
-        const body = {
-            message: `add ${problemId}`,
-            committer: {
-                name: storage.githubName,
-                email: storage.githubEmail,
-            },
-            content: encodedCode,
-        };
-        const response = await fetch(
-            `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${problemId}.txt`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${storage.githubApiToken}`,
-                },
-                body: JSON.stringify(body),
-            }
-        );
-        if (response.status == 201) {
-            const result = await response.json();
-            console.log(result);
-        } else {
-            console.error(`code upload request failed: ${response.status} - ${response.statusText}`);
-        }
-    }
+    const problemTitleElem = document.getElementById("problemTitle");
+    problemTitleElem.textContent = problem.title;
 }
 
 function getEditorContent() {
@@ -253,12 +125,4 @@ function getProgrammingLanguage() {
             });
         });
     });
-}
-
-function displayProblem(problem) {
-    const problemIdElem = document.getElementById("problemId");
-    problemIdElem.textContent = problem.id;
-
-    const problemTitleElem = document.getElementById("problemTitle");
-    problemTitleElem.textContent = problem.title;
 }
