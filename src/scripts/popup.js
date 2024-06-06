@@ -1,4 +1,5 @@
 const GITHUB_API_URL = "https://api.github.com";
+const DEFAULT_PROGRAMMING_LANG = "C++";
 const programmingLanguageExtensions = new Map([
     ["C++", "cpp"],
     ["Java", "java"],
@@ -28,6 +29,8 @@ const programmingLanguageExtensions = new Map([
 ]);
 
 const programmingLanguageSelect = document.getElementById("programmingLanguageSelect");
+const uploadCodeButton = document.getElementById("uploadCodeButton");
+const updateCodeButton = document.getElementById("updateCodeButton");
 
 function populateProgrammingLanguageSelection() {
     for (const language of programmingLanguageExtensions.keys()) {
@@ -43,29 +46,81 @@ document.addEventListener('DOMContentLoaded', async () => {
     const problem = await getProblem();
     if (problem) displayProblem(problem);
 
-    const language = await getProgrammingLanguage();
+    const language = (await getProgrammingLanguage()) ?? DEFAULT_PROGRAMMING_LANG;
     console.log("select lang: ", language);
-    if (language) {
-        programmingLanguageSelect.value = language;
+    programmingLanguageSelect.value = language;
+
+    const filename = `${problem.id.toString().padStart(4, "0")}.${programmingLanguageExtensions.get(language)}`;
+    const file = await getRemoteFile(filename);
+    console.log(file);
+
+    // set button visibility
+    uploadCodeButton.style.display = !file ? "inline" : "none";
+    updateCodeButton.style.display = file ? "inline" : "none";
+
+    uploadCodeButton.onclick = async () => {
+        const content = await getEditorContent();
+        createRemoteFile(filename, content);
+    }
+    updateCodeButton.onclick = async () => {
+        const content = await getEditorContent();
+        updateRemoteFile(filename, content, file.sha);
     }
 });
 
-document.getElementById('uploadCodeButton').addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, { action: "getEditorContent" }, (response) => {
-            if (response && response.content) {
-                console.log('Editor Content:', response.content);
-                uploadCode(response.content);
-            } else {
-                console.error("failed to retrieve editor content");
-            }
-        });
-    });
-});
+// document.getElementById('uploadCodeButton').addEventListener('click', () => {
+//     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//         chrome.tabs.sendMessage(tabs[0].id, { action: "getEditorContent" }, (response) => {
+//             if (response && response.content) {
+//                 console.log('Editor Content:', response.content);
+//                 uploadCode(response.content);
+//             } else {
+//                 console.error("failed to retrieve editor content");
+//             }
+//         });
+//     });
+// });
 
-async function getRemoteFile(name) {
+async function getRemoteFile(filename) {
+    const storage = await chrome.storage.sync.get({ githubApiToken: null, githubName: null, githubRepo: null });
+
     const response = await fetch(
-        `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${problemId}.txt`,
+        `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${filename}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${storage.githubApiToken}`,
+            },
+        }
+    );
+
+    if (response.status === 200) {
+        const body = await response.json();
+        return body;
+    } else if (response.status === 404) {
+        return null;
+    } else {
+        console.error(`error occurred while trying to fetch file: ${response.status} - ${response.statusText}`)
+    }
+}
+
+async function createRemoteFile(filename, content) {
+    const storage = await chrome.storage.sync.get({ githubApiToken: null, githubName: null, githubEmail: null, githubRepo: null });
+
+    // encode the content using base64
+    const encodedContent = btoa(content);
+    const body = {
+        message: `add ${filename}`,
+        committer: {
+            name: storage.githubName,
+            email: storage.githubEmail,
+        },
+        content: encodedContent,
+    };
+
+    const response = await fetch(
+        `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${filename}`,
         {
             method: "PUT",
             headers: {
@@ -75,14 +130,42 @@ async function getRemoteFile(name) {
             body: JSON.stringify(body),
         }
     );
+
+    if (response.status !== 201) {
+        console.error(`an error occurred while trying to create file: ${response.status} - ${response.statusText}`);
+    }
 }
 
-async function createRemoteFile() {
+async function updateRemoteFile(filename, content, sha) {
+    const storage = await chrome.storage.sync.get({ githubApiToken: null, githubName: null, githubEmail: null, githubRepo: null });
 
-}
+    // encode the content using base64
+    const encodedContent = btoa(content);
+    const body = {
+        message: `add ${filename}`,
+        committer: {
+            name: storage.githubName,
+            email: storage.githubEmail,
+        },
+        content: encodedContent,
+        sha: sha,
+    };
 
-async function updateRemoteFile() {
+    const response = await fetch(
+        `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${filename}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${storage.githubApiToken}`,
+            },
+            body: JSON.stringify(body),
+        }
+    );
 
+    if (response.status !== 200) {
+        console.error(`an error occurred while trying to update file: ${response.status} - ${response.statusText}`);
+    }
 }
 
 async function uploadCode(code) {
@@ -120,13 +203,6 @@ async function uploadCode(code) {
         }
     }
 }
-
-document.getElementById('grabCodeButton').addEventListener('click', async () => {
-    const editorContent = await getEditorContent();
-
-    const problemCodeElem = document.getElementById("problemCode");
-    problemCodeElem.textContent = editorContent;
-});
 
 function getEditorContent() {
     return new Promise((resolve, reject) => {
@@ -179,15 +255,10 @@ function getProgrammingLanguage() {
     });
 }
 
-document.getElementById('analyseButton').addEventListener('click', async () => {
-    const problem = await getProblem();
-    if (problem) displayProblem(problem);
-});
-
 function displayProblem(problem) {
     const problemIdElem = document.getElementById("problemId");
-    problemIdElem.textContent = `ID: ${problem.id}`;
+    problemIdElem.textContent = problem.id;
 
     const problemTitleElem = document.getElementById("problemTitle");
-    problemTitleElem.textContent = `Title: ${problem.title}`;
+    problemTitleElem.textContent = problem.title;
 }
