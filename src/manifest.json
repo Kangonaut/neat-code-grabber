@@ -6,8 +6,10 @@
     "permissions": [
         "scripting",
         "tabs",
-        "activeTab"
+        "activeTab",
+        "storage"
     ],
+    "options_page": "options.html",
     "host_permissions": [
         "https://*/*",
         "http://*/*"
