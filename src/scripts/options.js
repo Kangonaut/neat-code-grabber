@@ -2,6 +2,7 @@ const githubApiTokenStatusElem = document.getElementById("githubApiTokenStatus")
 const githubApiTokenInput = document.getElementById("githubApiTokenInput");
 const githubNameInput = document.getElementById("githubNameInput");
 const githubEmailInput = document.getElementById("githubEmailInput");
+const githubRepoInput = document.getElementById("githubRepoInput");
 
 function displayGithubApiTokenStatus(status) {
     githubApiTokenStatusElem.textContent = status ? "SET" : "UNSET";
@@ -12,10 +13,12 @@ function saveOptions() {
     const githubApiToken = githubApiTokenInput.value;
     const githubName = githubNameInput.value;
     const githubEmail = githubEmailInput.value;
+    const githubRepo = githubRepoInput.value;
 
     var data = {
         githubName: githubName,
         githubEmail: githubEmail,
+        githubRepo: githubRepo,
     };
 
     // check if API token has been updated
@@ -35,12 +38,13 @@ function saveOptions() {
 
 function restoreOptions() {
     chrome.storage.sync.get(
-        { githubApiToken: null, githubName: null, githubEmail: null },
+        { githubApiToken: null, githubName: null, githubEmail: null, githubRepo: null },
         (items) => {
             displayGithubApiTokenStatus(Boolean(items.githubApiToken));
 
             githubNameInput.value = items.githubName;
             githubEmailInput.value = items.githubEmail;
+            githubRepoInput.value = items.githubRepo;
         }
     );
 }

@@ -26,5 +26,15 @@
     },
     "background": {
         "service_worker": "scripts/background.js"
-    }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://leetcode.com/*"
+            ],
+            "js": [
+                "scripts/content.js"
+            ]
+        }
+    ]
 }
