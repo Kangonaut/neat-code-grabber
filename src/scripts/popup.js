@@ -1,3 +1,19 @@
+document.getElementById('uploadCodeButton').addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            function: extractCode
+        }, (results) => {
+            const code = results[0].result;
+
+            console.log(code);
+
+            const problemCodeElem = document.getElementById("problemCode");
+            problemCodeElem.textContent = code;
+        });
+    });
+});
+
 document.getElementById('grabCodeButton').addEventListener('click', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.scripting.executeScript({

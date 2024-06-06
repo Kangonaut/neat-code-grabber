@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "neat-code-grabber",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

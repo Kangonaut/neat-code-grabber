@@ -1,0 +1,25 @@
+meta {
+  name: create file
+  type: http
+  seq: 1
+}
+
+put {
+  url: https://api.github.com/repos/Kangonaut/leetcode-problems-test/contents/test.txt
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer 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
+}
+
+body:json {
+  {
+    "message":"my commit message",
+    "committer": {
+      "name":"Monalisa Octocat","email":"octocat@github.com"
+    },
+    "content":"SGVsbG8gV29ybGQh"
+  }
+}
