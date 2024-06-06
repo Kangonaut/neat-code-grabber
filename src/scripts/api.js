@@ -62,7 +62,7 @@ export async function updateRemoteFile(filename, content, sha) {
     // encode the content using base64
     const encodedContent = btoa(content);
     const body = {
-        message: `add ${filename}`,
+        message: `update ${filename}`,
         committer: {
             name: storage.githubName,
             email: storage.githubEmail,
