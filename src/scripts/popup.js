@@ -1,54 +1,76 @@
+const GITHUB_API_URL = "https://api.github.com";
+
 document.getElementById('uploadCodeButton').addEventListener('click', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.scripting.executeScript({
-            target: { tabId: tabs[0].id },
-            function: extractCode
-        }, (results) => {
-            const code = results[0].result;
-
-            console.log(code);
-
-            const problemCodeElem = document.getElementById("problemCode");
-            problemCodeElem.textContent = code;
+        chrome.tabs.sendMessage(tabs[0].id, { action: "getEditorContent" }, (response) => {
+            if (response && response.content) {
+                console.log('Editor Content:', response.content);
+                uploadCode(response.content);
+            } else {
+                console.error("failed to retrieve editor content");
+            }
         });
     });
 });
 
-document.getElementById('grabCodeButton').addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.scripting.executeScript({
-            target: { tabId: tabs[0].id },
-            function: extractCode
-        }, (results) => {
-            const code = results[0].result;
+async function uploadCode(code) {
+    const encodedCode = btoa(code);
+    console.log(encodedCode);
 
-            console.log(code);
+    const storage = await chrome.storage.sync.get({ githubApiToken: null, githubName: null, githubEmail: null, githubRepo: null });
 
-            const problemCodeElem = document.getElementById("problemCode");
-            problemCodeElem.textContent = code;
-        });
-    });
+    const problemId = 1117;
+    if (code) {
+        const body = {
+            message: `add ${problemId}`,
+            committer: {
+                name: storage.githubName,
+                email: storage.githubEmail,
+            },
+            content: encodedCode,
+        };
+        const response = await fetch(
+            `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${problemId}.txt`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${storage.githubApiToken}`,
+                },
+                body: JSON.stringify(body),
+            }
+        );
+        if (response.status == 201) {
+            const result = await response.json();
+            console.log(result);
+        } else {
+            console.error(`code upload request failed: ${response.status} - ${response.statusText}`);
+        }
+    }
+}
+
+document.getElementById('grabCodeButton').addEventListener('click', async () => {
+    const editorContent = await getEditorContent();
+
+    const problemCodeElem = document.getElementById("problemCode");
+    problemCodeElem.textContent = editorContent;
 });
 
-function extractCode() {
-    function getCodeEditorDiv() {
-        const divs = document.querySelectorAll("div");
-    
-        // check code block div
-        for (const div of divs) {
-            if (div.classList.contains("view-lines")) return div;
-        }
-    }
-   
-    var code = "";
-    const parentDiv = getCodeEditorDiv();
-    if (parentDiv) {
-        const lineDivs = parentDiv.getElementsByClassName("view-line");
-        for (const lineDiv of lineDivs) {
-            code += `${lineDiv.textContent}\n`;
-        }
-    }
-    return code;
+function getEditorContent() {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs.length === 0) {
+                return reject("no active tab found");
+            }
+            chrome.tabs.sendMessage(tabs[0].id, { action: "getEditorContent" }, (response) => {
+                if (response && response.content) {
+                    resolve(response.content);
+                } else {
+                    reject("failed to retrieve editor content");
+                }
+            });
+        });
+    });
 }
 
 document.getElementById('analyseButton').addEventListener('click', () => {
