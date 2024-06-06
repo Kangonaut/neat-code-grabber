@@ -1,4 +1,54 @@
 const GITHUB_API_URL = "https://api.github.com";
+const programmingLanguageExtensions = new Map([
+    ["C++", "cpp"],
+    ["Java", "java"],
+    ["Python", "py"],
+    ["Python3", "py"],
+    ["C", "c"],
+    ["C#", "cs"],
+    ["JavaScript", "js"],
+    ["TypeScript", "ts"],
+    ["PHP", "php"],
+    ["Swift", "swift"],
+    ["Kotlin", "kt"],
+    ["Dart", "dart"],
+    ["Go", "go"],
+    ["Ruby", "rb"],
+    ["Scala", "scala"],
+    ["Rust", "rs"],
+    ["Racket", "rkt"],
+    ["Erlang", "erl"],
+    ["Elixir", "ex"],
+    ["Elixir", "exs"],
+    ["Pandas", "py"],
+    ["MySQL", "sql"],
+    ["MS SQL Server", "sql"],
+    ["Oracle", "sql"],
+    ["PostgreSQL", "sql"],
+]);
+
+const programmingLanguageSelect = document.getElementById("programmingLanguageSelect");
+
+function populateProgrammingLanguageSelection() {
+    for (const language of programmingLanguageExtensions.keys()) {
+        const option = document.createElement("option");
+        option.value = option.textContent = language;
+        programmingLanguageSelect.appendChild(option);
+    }
+}
+
+populateProgrammingLanguageSelection();
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const problem = await getProblem();
+    if (problem) displayProblem(problem);
+
+    const language = await getProgrammingLanguage();
+    console.log("select lang: ", language);
+    if (language) {
+        programmingLanguageSelect.value = language;
+    }
+});
 
 document.getElementById('uploadCodeButton').addEventListener('click', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -12,6 +62,28 @@ document.getElementById('uploadCodeButton').addEventListener('click', () => {
         });
     });
 });
+
+async function getRemoteFile(name) {
+    const response = await fetch(
+        `${GITHUB_API_URL}/repos/${storage.githubName}/${storage.githubRepo}/contents/${problemId}.txt`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${storage.githubApiToken}`,
+            },
+            body: JSON.stringify(body),
+        }
+    );
+}
+
+async function createRemoteFile() {
+
+}
+
+async function updateRemoteFile() {
+
+}
 
 async function uploadCode(code) {
     const encodedCode = btoa(code);
@@ -73,48 +145,49 @@ function getEditorContent() {
     });
 }
 
-document.getElementById('analyseButton').addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.scripting.executeScript({
-            target: { tabId: tabs[0].id },
-            function: extractProblemInfo
-        }, (results) => {
-            console.log(results);
-
-            const info = results[0].result;
-
-            console.log(JSON.stringify(info));
-
-            if (info)
-                displayProblemInfo(info);
+function getProblem() {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs.length === 0) {
+                return reject("no active tab found");
+            }
+            chrome.tabs.sendMessage(tabs[0].id, { action: "getProblem" }, (response) => {
+                if (response && response.problem) {
+                    resolve(response.problem);
+                } else {
+                    reject("failed to retrieve problem");
+                }
+            });
         });
     });
-});
-
-function displayProblemInfo(info) {
-    const problemIdElem = document.getElementById("problemId");
-    problemIdElem.textContent = `ID: ${info.id}`;
-
-    const problemTitleElem = document.getElementById("problemTitle");
-    problemTitleElem.textContent = `Title: ${info.title}`;
 }
 
-function extractProblemInfo() {
-    class ProblemInfo {
-        constructor(id, title) {
-            this.id = id;
-            this.title = title;
-        }
-    }
+function getProgrammingLanguage() {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs.length === 0) {
+                return reject("no active tab found");
+            }
+            chrome.tabs.sendMessage(tabs[0].id, { action: "getProgrammingLanguage" }, (response) => {
+                if (response && response.language) {
+                    resolve(response.language);
+                } else {
+                    reject("failed to retrieve programming language");
+                }
+            });
+        });
+    });
+}
 
-    // get all anchor tags
-    const anchors = document.querySelectorAll("a");
+document.getElementById('analyseButton').addEventListener('click', async () => {
+    const problem = await getProblem();
+    if (problem) displayProblem(problem);
+});
 
-    // find problem title anchor tag
-    for (const anchor of anchors) {
-        const re = /(\d+).\s+([\w\s]+)/;
-        const result = anchor.textContent.match(re);
+function displayProblem(problem) {
+    const problemIdElem = document.getElementById("problemId");
+    problemIdElem.textContent = `ID: ${problem.id}`;
 
-        if (result) return new ProblemInfo(result[1], result[2]);
-    }
+    const problemTitleElem = document.getElementById("problemTitle");
+    problemTitleElem.textContent = `Title: ${problem.title}`;
 }
