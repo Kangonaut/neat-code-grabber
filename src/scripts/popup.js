@@ -33,6 +33,11 @@ const programmingLanguageSelect = document.getElementById("programmingLanguageSe
 const uploadCodeButton = document.getElementById("uploadCodeButton");
 const updateCodeButton = document.getElementById("updateCodeButton");
 
+const problemDiv = document.getElementById("problemDiv");
+const noProblemDiv = document.getElementById("noProblemDiv");
+const errorsDiv = document.getElementById("errorsDiv");
+const errorMessageElem = document.getElementById("errorMessage");
+
 function populateProgrammingLanguageSelection() {
     for (const language of programmingLanguageExtensions.keys()) {
         const option = document.createElement("option");
@@ -40,31 +45,68 @@ function populateProgrammingLanguageSelection() {
         programmingLanguageSelect.appendChild(option);
     }
 }
-populateProgrammingLanguageSelection();
+
+async function isProblemPage() {
+    const pattern = /https:\/\/leetcode\.com\/problems\/.*/;
+    return await matchUrl(pattern);
+}
+
+function matchUrl(pattern) {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs.length > 0) {
+                const tab = tabs[0];
+                const url = tab.url;
+
+                console.log(`url: ${url}`);
+
+                const isMatch = pattern.test(url);
+                resolve(isMatch);
+            } else {
+                reject("no active tab found");
+            }
+        });
+    });
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const problem = await getProblem();
-    if (problem) displayProblem(problem);
+    try {
+        const isProblem = await isProblemPage();
 
-    const language = (await getProgrammingLanguage()) ?? DEFAULT_PROGRAMMING_LANG;
-    console.log("select lang: ", language);
-    programmingLanguageSelect.value = language;
+        if (isProblem) {
+            problemDiv.style.display = "block";
 
-    const filename = `${problem.id.toString().padStart(4, "0")}.${programmingLanguageExtensions.get(language)}`;
-    const file = await getRemoteFile(filename);
-    console.log(file);
+            populateProgrammingLanguageSelection();
 
-    // set button visibility
-    uploadCodeButton.style.display = !file ? "inline" : "none";
-    updateCodeButton.style.display = file ? "inline" : "none";
+            const problem = await getProblem();
+            if (problem) displayProblem(problem);
 
-    uploadCodeButton.onclick = async () => {
-        const content = await getEditorContent();
-        createRemoteFile(filename, content);
-    }
-    updateCodeButton.onclick = async () => {
-        const content = await getEditorContent();
-        updateRemoteFile(filename, content, file.sha);
+            const language = (await getProgrammingLanguage()) ?? DEFAULT_PROGRAMMING_LANG;
+            console.log("select lang: ", language);
+            programmingLanguageSelect.value = language;
+
+            const filename = `${problem.id.toString().padStart(4, "0")}.${programmingLanguageExtensions.get(language)}`;
+            const file = await getRemoteFile(filename);
+            console.log(file);
+
+            // set button visibility
+            uploadCodeButton.style.display = !file ? "inline" : "none";
+            updateCodeButton.style.display = file ? "inline" : "none";
+
+            uploadCodeButton.onclick = async () => {
+                const content = await getEditorContent();
+                createRemoteFile(filename, content);
+            }
+            updateCodeButton.onclick = async () => {
+                const content = await getEditorContent();
+                updateRemoteFile(filename, content, file.sha);
+            }
+        } else {
+            noProblemDiv.style.display = "block";
+        }
+    } catch (err) {
+        errorsDiv.style.display = "block";
+        errorMessageElem.textContent = err.message;
     }
 });
 
