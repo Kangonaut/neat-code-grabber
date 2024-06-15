@@ -17,6 +17,32 @@
             min-width: 300px;
             max-width: 100%;
         }
+
+        .btn-outline-primary,
+        .btn-outline-primary:hover,
+        .btn-outline-primary:active,
+        .btn-outline-primary:visited {
+            border-color: #f79e1a !important;
+        }
+
+        .btn-outline-primary,
+        .btn-outline-primary:visited {
+            color: #f79e1a !important;
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:active {
+            color: black !important;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #f79e1a !important;
+        }
+
+        .btn-outline-primary:active {
+            background-color: #bc7914 !important;
+            border-color: #bc7914 !important;
+        }
     </style>
 </head>
 
@@ -34,9 +60,9 @@
             </div>
             <select id="programmingLanguageSelect" class="form-select"></select>
 
-            <div class="mt-3 text-center">
-                <button id="uploadCodeButton" class="btn btn-outline-success" style="display: none">upload code</button>
-                <button id="updateCodeButton" class="btn btn-outline-info" style="display: none">update code</button>
+            <div class="mt-3 row justify-content-evenly">
+                <button id="uploadCodeButton" class="btn col-4" disabled>upload</button>
+                <button id="updateCodeButton" class="btn col-4" disabled>update</button>
             </div>
         </div>
         <div id="noProblemDiv" style="display: none">

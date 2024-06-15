@@ -90,8 +90,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log(file);
 
             // set button visibility
-            uploadCodeButton.style.display = !file ? "inline" : "none";
-            updateCodeButton.style.display = file ? "inline" : "none";
+            uploadCodeButton.disabled = file;
+            uploadCodeButton.className += file ? " disabled" : " btn-outline-primary";
+            updateCodeButton.disabled = !file;
+            updateCodeButton.className += !file ? " disabled" : " btn-outline-primary";
 
             uploadCodeButton.onclick = async () => {
                 const content = await getEditorContent();
