@@ -37,6 +37,7 @@ const problemDiv = document.getElementById("problemDiv");
 const noProblemDiv = document.getElementById("noProblemDiv");
 const errorsDiv = document.getElementById("errorsDiv");
 const errorMessageElem = document.getElementById("errorMessage");
+const actionResultMessageElem = document.getElementById("actionResultMessage");
 
 function populateProgrammingLanguageSelection() {
     for (const language of programmingLanguageExtensions.keys()) {
@@ -70,6 +71,21 @@ function matchUrl(pattern) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    await reloadContent();
+});
+
+async function reloadContent() {
+    // reset visibility
+    problemDiv.style.display = "none";
+    errorsDiv.style.display = "none";
+    noProblemDiv.style.display = "none";
+
+    // reset buttons
+    uploadCodeButton.disabled = true;
+    uploadCodeButton.className = "btn col-4";
+    updateCodeButton.disabled = true;
+    updateCodeButton.className = "btn col-4";
+
     try {
         const isProblem = await isProblemPage();
 
@@ -97,11 +113,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             uploadCodeButton.onclick = async () => {
                 const content = await getEditorContent();
-                createRemoteFile(filename, content);
+                try {
+                    await createRemoteFile(filename, content);
+                    actionResultMessageElem.textContent = `${filename} successfully created`;
+                    await reloadContent();
+                } catch (err) {
+
+                }
             }
             updateCodeButton.onclick = async () => {
                 const content = await getEditorContent();
-                updateRemoteFile(filename, content, file.sha);
+                try {
+                    await updateRemoteFile(filename, content, file.sha);
+                    actionResultMessageElem.textContent = `${filename} successfully updated`;
+                    await reloadContent();
+                } catch (err) {
+
+                }
             }
         } else {
             noProblemDiv.style.display = "block";
@@ -110,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         errorsDiv.style.display = "block";
         errorMessageElem.textContent = err.message;
     }
-});
+}
 
 function displayProblem(problem) {
     const problemIdElem = document.getElementById("problemId");
