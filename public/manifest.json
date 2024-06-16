@@ -9,7 +9,6 @@
         "activeTab",
         "storage"
     ],
-    "options_page": "options.html",
     "host_permissions": [
         "https://*/*",
         "http://*/*"
@@ -21,11 +20,8 @@
         "128": "images/128x128.png"
     },
     "action": {
-        "default_popup": "popup.html",
+        "default_popup": "index.html",
         "default_title": "NeatCode Grabber"
-    },
-    "background": {
-        "service_worker": "scripts/background.js"
     },
     "content_scripts": [
         {
@@ -33,7 +29,7 @@
                 "https://leetcode.com/*"
             ],
             "js": [
-                "scripts/content.js"
+                "src/content/main.js"
             ]
         }
     ]

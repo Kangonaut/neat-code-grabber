@@ -1,3 +1,5 @@
+import { ProblemDetails } from "../types";
+
 const availableProgrammingLanguages = [
     "C++", "Java", "Python", "Python3", "C", "C#",
     "JavaScript", "TypeScript", "PHP", "Swift",
@@ -6,14 +8,14 @@ const availableProgrammingLanguages = [
     "MS SQL Server", "Oracle", "PostgreSQL"
 ];
 
-function getProblem() {
+function getProblemDetails(): ProblemDetails | null {
     // get all anchor tags
     const anchors = document.querySelectorAll("a");
 
     // find problem title anchor tag
     for (const anchor of anchors) {
         const re = /(\d+).\s+([\w\s]+)/;
-        const result = anchor.textContent.match(re);
+        const result = anchor.textContent?.match(re);
 
         if (result) {
             return {
@@ -22,6 +24,8 @@ function getProblem() {
             };
         }
     }
+
+    return null;
 }
 
 function getProgrammingLanguage() {
@@ -31,7 +35,7 @@ function getProgrammingLanguage() {
         const lang = button.textContent;
 
         // check if valid programming language
-        if (availableProgrammingLanguages.includes(lang)) {
+        if (lang && availableProgrammingLanguages.includes(lang)) {
             return lang;
         }
     }
@@ -63,12 +67,13 @@ function getEditorContent() {
     return code;
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
     if (request.action === "getEditorContent") {
         const content = getEditorContent();
         sendResponse({ content });
     } else if (request.action === "getProblem") {
-        const problem = getProblem();
+        console.log("received getProblem message");
+        const problem = getProblemDetails();
         sendResponse({ problem });
     } else if (request.action === "getProgrammingLanguage") {
         const language = getProgrammingLanguage();
