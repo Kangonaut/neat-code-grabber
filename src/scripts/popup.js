@@ -32,6 +32,7 @@ const programmingLanguageExtensions = new Map([
 const programmingLanguageSelect = document.getElementById("programmingLanguageSelect");
 const uploadCodeButton = document.getElementById("uploadCodeButton");
 const updateCodeButton = document.getElementById("updateCodeButton");
+const copyToClipboardButton = document.getElementById("copyToClipboardButton");
 
 const problemDiv = document.getElementById("problemDiv");
 const noProblemDiv = document.getElementById("noProblemDiv");
@@ -85,6 +86,8 @@ async function reloadContent() {
     uploadCodeButton.className = "btn col-4";
     updateCodeButton.disabled = true;
     updateCodeButton.className = "btn col-4";
+    copyToClipboardButton.disabled = true;
+    copyToClipboardButton.className = "btn col-8";
 
     try {
         const isProblem = await isProblemPage();
@@ -105,16 +108,23 @@ async function reloadContent() {
             const file = await getRemoteFile(filename);
             console.log(file);
 
+            // retrieve editor content
+            const editorContent = await getEditorContent();
+
+            // decode file content
+            const fileContent = atob(file.content);
+
             // set button visibility
             uploadCodeButton.disabled = file;
             uploadCodeButton.className += file ? " disabled" : " btn-outline-primary";
-            updateCodeButton.disabled = !file;
-            updateCodeButton.className += !file ? " disabled" : " btn-outline-primary";
+            updateCodeButton.disabled = !(file && editorContent !== fileContent);
+            updateCodeButton.className += !(file && editorContent !== fileContent) ? " disabled" : " btn-outline-primary";
+            copyToClipboardButton.disabled = !file;
+            copyToClipboardButton.className += !file ? " disabled" : " btn-outline-primary";
 
             uploadCodeButton.onclick = async () => {
-                const content = await getEditorContent();
                 try {
-                    await createRemoteFile(filename, content);
+                    await createRemoteFile(filename, editorContent);
                     actionResultMessageElem.textContent = `${filename} successfully created`;
                     await reloadContent();
                 } catch (err) {
@@ -122,14 +132,17 @@ async function reloadContent() {
                 }
             }
             updateCodeButton.onclick = async () => {
-                const content = await getEditorContent();
                 try {
-                    await updateRemoteFile(filename, content, file.sha);
+                    await updateRemoteFile(filename, editorContent, file.sha);
                     actionResultMessageElem.textContent = `${filename} successfully updated`;
                     await reloadContent();
                 } catch (err) {
 
                 }
+            }
+
+            copyToClipboardButton.onclick = async () => {
+                navigator.clipboard.writeText(fileContent);
             }
         } else {
             noProblemDiv.style.display = "block";
