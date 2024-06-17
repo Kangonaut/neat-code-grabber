@@ -38,37 +38,37 @@ function PopupPage() {
   }
 
   async function loadData() {
-    try {
-      console.log("running loadData");
+    const isProblemPage = await Utils.isProblemPage();
+    setIsProblemPage(isProblemPage);
 
-      const isProblemPage = await Utils.isProblemPage();
-      setIsProblemPage(isProblemPage);
+    if (isProblemPage) {
+      try {
+        // get problem details
+        const problemDetails = await ContentService.getProblemDetails();
+        setProblemDetails(problemDetails);
+        console.log(`problem details: ${JSON.stringify(problemDetails)}`);
 
-      // get problem details
-      const problemDetails = await ContentService.getProblemDetails();
-      setProblemDetails(problemDetails);
-      console.log(`problem details: ${JSON.stringify(problemDetails)}`);
+        // get programming language
+        const language = await ContentService.getProgrammingLanguage();
+        setSelectedLanguage(language);
 
-      // get programming language
-      const language = await ContentService.getProgrammingLanguage();
-      setSelectedLanguage(language);
+        // get editor content
+        const editorContent = await ContentService.getEditorContent();
+        setEditorContent(editorContent);
 
-      // get editor content
-      const editorContent = await ContentService.getEditorContent();
-      setEditorContent(editorContent);
+        // get remote file
+        const filename = Utils.buildFilename(problemDetails!.id, language);
+        setFilename(filename);
 
-      // get remote file
-      const filename = Utils.buildFilename(problemDetails!.id, language);
-      setFilename(filename);
+        const file = await ApiService.getRemoteFile(filename);
+        setFile(file);
 
-      const file = await ApiService.getRemoteFile(filename);
-      setFile(file);
-
-      const fileContent = atob(file?.content ?? "");
-      setFileContent(fileContent);
-    } catch (err) {
-      showToast(StatusType.ERROR, err as string);
-      setShowUps(true);
+        const fileContent = atob(file?.content ?? "");
+        setFileContent(fileContent);
+      } catch (err) {
+        showToast(StatusType.ERROR, err as string);
+        setShowUps(true);
+      }
     }
   }
 
