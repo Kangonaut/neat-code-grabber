@@ -121,7 +121,7 @@ My current workaround is simply to make the code editor bigger until there are n
 
 <div align="center">
   <img src="screenshots/line-wrap-issue-workaround.png" width="800"/>
-<div align="center">
+</div>
 
 If you have any ideas how to solve this issue, I would be very happy. :D
 
