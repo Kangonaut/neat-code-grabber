@@ -45,17 +45,17 @@ NeatCode Grabber does NOT extract and upload the problem description.
 1. Open the context menu (usually three lines or dots in the top right corner) and click on `Extensions` (sometimes `Extensions > Manage Extensions`).
 1. Enable `Developer mode`.
 
-  <div align="center">
-    <img src="screenshots/enable-dev-mode.png" width="500"/>
-  </div>
+    <div align="center">
+      <img src="screenshots/enable-dev-mode.png" width="500"/>
+    </div>
 
 1. Click the newly appeared `Load unpacked` option and navigate to the storage location of the application folder.
 1. Make sure the chosen folder contains the `index.html` and `manifest.json` files.
 1. Now pin the extension to make your life easier.
 
-  <div align="center">
-    <img src="screenshots/pin-extension.png" width="400"/>
-  </div>
+    <div align="center">
+      <img src="screenshots/pin-extension.png" width="400"/>
+    </div>
 
 1. When clicking on the extension, a popup will appear that links to the options page.
 
@@ -71,10 +71,10 @@ NeatCode Grabber does NOT extract and upload the problem description.
 
 1. I assume that you already have a GitHub repository for your LeetCode solutions. If not, create one now.
 1. Then you will have to configure some GitHub stuff.
-  1. your GitHub API token: you need to create a fine-grained personal access token (see [this guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)) that has read and write access to your repository `Contents`
-  1. your GitHub username
-  1. your GitHub commit email address (which you can find [here](https://github.com/settings/emails))
-  1. your repository name
+    1. your GitHub API token: you need to create a fine-grained personal access token (see [this guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)) that has read and write access to your repository `Contents`
+    1. your GitHub username
+    1. your GitHub commit email address (which you can find [here](https://github.com/settings/emails))
+    1. your repository name
 1. Don't forget to hit the `save` button.
 1. Now go and solve a LeetCode problem (e.g. [Two Sums](https://leetcode.com/problems/two-sum/))
 1. When you are happy with your code, hit that extension button, check the info (problem ID, title and programming language) and upload using the `create` button.
