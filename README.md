@@ -45,29 +45,29 @@ NeatCode Grabber does NOT extract and upload the problem description.
 1. Open the context menu (usually three lines or dots in the top right corner) and click on `Extensions` (sometimes `Extensions > Manage Extensions`).
 1. Enable `Developer mode`.
 
-<div align="center">
-  <img src="screenshots/enable-dev-mode.png" width="500"/>
-</div>
+  <div align="center">
+    <img src="screenshots/enable-dev-mode.png" width="500"/>
+  </div>
 
 1. Click the newly appeared `Load unpacked` option and navigate to the storage location of the application folder.
 1. Make sure the chosen folder contains the `index.html` and `manifest.json` files.
 1. Now pin the extension to make your life easier.
 
-<div align="center">
-  <img src="screenshots/pin-extension.png" width="400"/>
-</div>
+  <div align="center">
+    <img src="screenshots/pin-extension.png" width="400"/>
+  </div>
 
 1. When clicking on the extension, a popup will appear that links to the options page.
 
-<div align="center">
-  <img src="screenshots/link-to-options.png" width="400"/>
-</div>
+  <div align="center">
+    <img src="screenshots/link-to-options.png" width="400"/>
+  </div>
 
 1. In the options menu, the first thing you should do is change the appearance to `Dark`, which will boost your coding skills by a `10x` modifier.
 
-<div align="center">
-  <img src="screenshots/enable-dark-mode.png" width="300"/>
-</div>
+  <div align="center">
+    <img src="screenshots/enable-dark-mode.png" width="300"/>
+  </div>
 
 1. I assume that you already have a GitHub repository for your LeetCode solutions. If not, create one now.
 1. Then you will have to configure some GitHub stuff.
