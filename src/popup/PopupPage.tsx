@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Container, Flex, Heading, Text, useToast } from '@chakra-ui/react'
+import { Button, Container, Flex, Text, useToast } from '@chakra-ui/react'
 import ProgrammingLanguageSelection from './components/ProgrammingLanguageSelection'
 import ProblemDetailsDisplay from './components/ProblemDetailsDisplay'
 import { FilePublic, ProblemDetails, StatusType, statusTypeEmoticons } from '../types'
@@ -98,7 +98,6 @@ function PopupPage() {
 
   return (
     <Container>
-      <Heading size="md">NeatCode Grabber</Heading>
       {
         isProblemPage && !showUps &&
         <>
