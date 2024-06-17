@@ -130,8 +130,8 @@ function PopupPage() {
       {
         !isProblemPage &&
         <>
-          <Container marginTop={5}>
-            <Text>you need to open a LeetCode problem</Text>
+          <Container>
+            <Text fontStyle="italic" fontSize="lg" color="gray">you need to open a LeetCode problem</Text>
           </Container>
         </>
       }
