@@ -23,3 +23,21 @@ export interface Options {
     email: string | null;
     repository: string | null;
 }
+
+export enum StatusType {
+    SUCCESS = "success",
+    ERROR = "error",
+    INFO = "info",
+}
+
+export const statusTypeColors: { [key in StatusType]: string } = {
+    [StatusType.SUCCESS]: "green",
+    [StatusType.ERROR]: "red",
+    [StatusType.INFO]: "blue",
+}
+
+export const statusTypeEmoticons: { [key in StatusType]: string } = {
+    [StatusType.SUCCESS]: ":D",
+    [StatusType.ERROR]: ":(",
+    [StatusType.INFO]: ":|",
+}

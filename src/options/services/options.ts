@@ -12,7 +12,7 @@ export default class OptionsService {
                     }
                 );
             } catch (err) {
-                reject(`an error occurred while trying to save options: ${err}`)
+                reject(`failed to save options: ${err}`)
             }
         });
     }
@@ -27,7 +27,7 @@ export default class OptionsService {
                     }
                 );
             } catch (err) {
-                reject(`an error occurred while trying to load options: ${err}`);
+                reject(`failed to load options: ${err}`);
             }
         });
     }
