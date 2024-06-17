@@ -1,4 +1,4 @@
-import { Heading, Text } from "@chakra-ui/react";
+import { Container, Heading, Text } from "@chakra-ui/react";
 import { ProblemDetails } from "../../types";
 
 interface ProblemDetailsProps {
@@ -8,9 +8,10 @@ interface ProblemDetailsProps {
 function ProblemDetailsDisplay({ problemDetails }: ProblemDetailsProps) {
     return (
         <>
-            <Heading size="sm">Problem</Heading>
-            <Text>ID: {problemDetails.id}</Text>
-            <Text>Title: {problemDetails.title}</Text>
+            <Container alignContent="start" textAlign="left">
+                <Heading size="md">Problem</Heading>
+                <Text fontSize="md" mt={3}>{problemDetails.id}. {problemDetails.title}</Text>
+            </Container>
         </>
     );
 }
