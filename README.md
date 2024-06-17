@@ -59,15 +59,15 @@ NeatCode Grabber does NOT extract and upload the problem description.
 
 1. When clicking on the extension, a popup will appear that links to the options page.
 
-  <div align="center">
-    <img src="screenshots/link-to-options.png" width="400"/>
-  </div>
+    <div align="center">
+      <img src="screenshots/link-to-options.png" width="400"/>
+    </div>
 
 1. In the options menu, the first thing you should do is change the appearance to `Dark`, which will boost your coding skills by a `10x` modifier.
 
-  <div align="center">
-    <img src="screenshots/enable-dark-mode.png" width="300"/>
-  </div>
+    <div align="center">
+      <img src="screenshots/enable-dark-mode.png" width="300"/>
+    </div>
 
 1. I assume that you already have a GitHub repository for your LeetCode solutions. If not, create one now.
 1. Then you will have to configure some GitHub stuff.
@@ -79,29 +79,29 @@ NeatCode Grabber does NOT extract and upload the problem description.
 1. Now go and solve a LeetCode problem (e.g. [Two Sums](https://leetcode.com/problems/two-sum/))
 1. When you are happy with your code, hit that extension button, check the info (problem ID, title and programming language) and upload using the `create` button.
 
-<div align="center">
-  <img src="screenshots/create-new-file.png" width="500"/>
-</div>
+    <div align="center">
+      <img src="screenshots/create-new-file.png" width="500"/>
+    </div>
 
 1. Assuming that my code works (I know, very risky) and that you have configured everything correctly, a success message should pop up.
 
-<div align="center">
-  <img src="screenshots/create-new-file-success.png" width="500"/>
-</div>
+    <div align="center">
+      <img src="screenshots/create-new-file-success.png" width="500"/>
+    </div>
 
 1. When you change the code and reopen the extension, it should show a `hide diff` button that will expand the diff view between the local and remote versions.
 
-<div align="center">
-  <img src="screenshots/diff-view.png" width="500"/>
-</div>
+    <div align="center">
+      <img src="screenshots/diff-view.png" width="500"/>
+    </div>
 
 1. In case you want to get the content of the remote file (on the GitHub repo), just hit `copy to clipboard`.
 1. And `update` simply updates the remote file to reflect your new changes.
 1. If you visit your GitHub repo, you should now see your uploaded code.
 
-<div align="center">
-  <img src="screenshots/uploaded-code.png" width="800"/>
-</div>
+    <div align="center">
+      <img src="screenshots/uploaded-code.png" width="800"/>
+    </div>
 
 ## Known Issues
 
