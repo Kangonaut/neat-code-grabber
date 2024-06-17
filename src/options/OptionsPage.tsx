@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader, ChakraProvider, Container, Heading, Input, StackDivider, VStack, useToast } from "@chakra-ui/react";
+import { Button, Card, CardBody, CardHeader, ChakraProvider, Container, Heading, Input, Select, StackDivider, VStack, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import OptionsService from "../services/options";
 import { Options, StatusType, statusTypeEmoticons } from "../types";
@@ -59,6 +59,11 @@ function OptionsPage() {
         }
     }
 
+    function setColorMode(colorMode: string) { 
+        localStorage.setItem("chakra-ui-color-mode", colorMode);
+        window.location.reload();
+    }
+
     return (
         <ChakraProvider>
             <Container m="auto" mt={10}>
@@ -66,6 +71,30 @@ function OptionsPage() {
                 {/* content */}
                 {
                     !showUps && <>
+                        {/* General */}
+                        <Card mt={10}>
+                            <CardHeader>
+                                <Heading size="md">GitHub</Heading>
+                            </CardHeader>
+
+                            <CardBody>
+                                <VStack spacing={5} divider={<StackDivider />}>
+                                    <Container>
+                                        <Heading size="xs">Appearance</Heading>
+                                        <Select
+                                            value={localStorage.getItem("chakra-ui-color-mode") ?? "light"}
+                                            onChange={e => setColorMode(e.target.value)}
+                                            mt={3}
+                                        >
+                                            <option value="dark">Dark</option>
+                                            <option value="light">Light</option>
+                                        </Select>
+                                    </Container>
+                                </VStack>
+                            </CardBody>
+                        </Card>
+
+                        {/* GitHub */}
                         <Card mt={10}>
                             <CardHeader>
                                 <Heading size="md">GitHub</Heading>
