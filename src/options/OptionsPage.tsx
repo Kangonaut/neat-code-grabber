@@ -66,7 +66,7 @@ function OptionsPage() {
 
     return (
         <ChakraProvider>
-            <Container m="auto" mt={10}>
+            <Container m="auto" mt={5} mb={10}>
                 <Heading>Options :D</Heading>
                 {/* content */}
                 {
