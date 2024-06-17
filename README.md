@@ -1,9 +1,11 @@
 <div align="center">
-<img src="logo.png" alt="NeatCode Grabber logo" width="192"/>
+  <div align="center" style="background-color: gray; border-radius: 50%; width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
+    <img src="logo.png" alt="NeatCode Grabber logo" width="192" style="margin: auto"/>
+  </div>
 
-# NeatCode Grabber
+  # NeatCode Grabber
 
-[![license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Kangonaut/neat-code-grabber/blob/main/LICENSE)
+  [![license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Kangonaut/neat-code-grabber/blob/main/LICENSE)
 
 </div>
 
