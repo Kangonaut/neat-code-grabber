@@ -1,4 +1,4 @@
-import { ProblemDetails } from "../../types";
+import { ProblemDetails } from "../types";
 
 export class ContentService {
     public static getProblemDetails(): Promise<ProblemDetails> {

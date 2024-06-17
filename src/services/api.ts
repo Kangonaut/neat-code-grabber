@@ -1,4 +1,4 @@
-import { FilePublic } from "../../types";
+import { FilePublic } from "../types";
 
 export class ApiService {
     private static readonly API_URL = "https://api.github.com";
