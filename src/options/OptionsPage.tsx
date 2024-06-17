@@ -11,7 +11,7 @@ function OptionsPage() {
     const [username, setUsername] = useState<string | null>(null);
     const [email, setEmail] = useState<string | null>(null);
     const [repository, setRepository] = useState<string | null>(null);
-    const [error, setError] = useState<boolean>(false);
+    const [showUps, setShowUps] = useState<boolean>(false);
 
     useEffect(() => {
         loadOptions();
@@ -42,7 +42,6 @@ function OptionsPage() {
             loadOptions();
         } catch (err) {
             showToast(StatusType.ERROR, err as string);
-            setError(true);
         }
     }
 
@@ -56,7 +55,7 @@ function OptionsPage() {
             setRepository(options.repository);
         } catch (err) {
             showToast(StatusType.ERROR, err as string);
-            setError(true);
+            setShowUps(true);
         }
     }
 
@@ -66,7 +65,7 @@ function OptionsPage() {
                 <Heading>NeatCode Grabber - Options</Heading>
                 {/* content */}
                 {
-                    !error && <>
+                    !showUps && <>
                         <Card mt={10}>
                             <CardHeader>
                                 <Heading size="md">GitHub</Heading>
@@ -128,7 +127,7 @@ function OptionsPage() {
                     </>
                 }
 
-                <UpsMessage error={error} />
+                <UpsMessage isActive={showUps} />
             </Container>
         </ChakraProvider>
     );

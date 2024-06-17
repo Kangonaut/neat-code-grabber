@@ -23,7 +23,7 @@ export class ApiService {
         } else if (response.status === 404) {
             return null;
         } else {
-            throw new Error(`error occurred while trying to fetch file: ${response.status} - ${response.statusText}`);
+            throw new Error(`failed to fetch file: ${response.status} - ${response.statusText}`);
         }
     }
 
@@ -55,7 +55,7 @@ export class ApiService {
         );
 
         if (response.status !== 201) {
-            throw new Error(`an error occurred while trying to create file: ${response.status} - ${response.statusText}`);
+            throw new Error(`failed to create file: ${response.status} - ${response.statusText}`);
         }
     }
 
@@ -87,7 +87,7 @@ export class ApiService {
         );
 
         if (response.status !== 200) {
-            throw new Error(`an error occurred while trying to update file: ${response.status} - ${response.statusText}`);
+            throw new Error(`failed to update file: ${response.status} - ${response.statusText}`);
         }
     }
 }
