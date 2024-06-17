@@ -7,6 +7,8 @@ import { ContentService } from '../services/content'
 import { Utils } from '../services/utils'
 import { ApiService } from '../services/api'
 import UpsMessage from '../components/UpsMessage'
+import CodeDiffView from './components/CodeDiffView'
+
 
 function PopupPage() {
   const toast = useToast();
@@ -101,7 +103,7 @@ function PopupPage() {
       {
         isProblemPage && !showUps &&
         <>
-          <Container marginTop={5}>
+          <Container>
             {
               problemDetails && <ProblemDetailsDisplay problemDetails={problemDetails} />
             }
@@ -119,6 +121,10 @@ function PopupPage() {
           <Flex justify="center" marginTop={3} gap={2}>
             <Button onClick={onCopyToClipboard} isDisabled={Boolean(!file)}>copy to clipboard</Button>
           </Flex>
+
+          {editorContent && fileContent &&
+            <CodeDiffView localVersion={editorContent!} remoteVersion={fileContent!} />
+          }
         </>
       }
       {
