@@ -1,4 +1,4 @@
-import { programmingLanguageExtensions } from "../../languages";
+import { programmingLanguageExtensions } from "../languages";
 
 export class Utils {
     public static async isProblemPage(): Promise<boolean> {

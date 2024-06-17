@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import './App.css'
-import { Button, ChakraProvider, Container, Flex, Heading, Text, useToast } from '@chakra-ui/react'
+import { Button, Container, Flex, Heading, Text, useToast } from '@chakra-ui/react'
 import ProgrammingLanguageSelection from './components/ProgrammingLanguageSelection'
 import ProblemDetailsDisplay from './components/ProblemDetailsDisplay'
 import { FilePublic, ProblemDetails, StatusType, statusTypeEmoticons } from '../types'
-import { ContentService } from './services/content'
-import { Utils } from './services/utils'
-import { ApiService } from './services/api'
+import { ContentService } from '../services/content'
+import { Utils } from '../services/utils'
+import { ApiService } from '../services/api'
 import UpsMessage from '../components/UpsMessage'
 
 function PopupPage() {
@@ -98,44 +97,42 @@ function PopupPage() {
   }
 
   return (
-    <ChakraProvider>
-      <Container>
-        <Heading size="md">NeatCode Grabber</Heading>
-        {
-          isProblemPage && !showUps &&
-          <>
-            <Container marginTop={5}>
-              {
-                problemDetails && <ProblemDetailsDisplay problemDetails={problemDetails} />
-              }
-            </Container>
+    <Container>
+      <Heading size="md">NeatCode Grabber</Heading>
+      {
+        isProblemPage && !showUps &&
+        <>
+          <Container marginTop={5}>
+            {
+              problemDetails && <ProblemDetailsDisplay problemDetails={problemDetails} />
+            }
+          </Container>
 
-            <Container marginTop={5}>
-              <ProgrammingLanguageSelection {...{ selectedLanguage, setSelectedLanguage }} />
-            </Container>
+          <Container marginTop={5}>
+            <ProgrammingLanguageSelection {...{ selectedLanguage, setSelectedLanguage }} />
+          </Container>
 
-            <Flex justify="center" marginTop={5} gap={2}>
-              <Button onClick={onCreate} isDisabled={Boolean(!(problemDetails && !file))}>create</Button>
-              <Button onClick={onUpdate} isDisabled={Boolean(!(file && editorContent !== fileContent))}>update</Button>
-            </Flex>
+          <Flex justify="center" marginTop={5} gap={2}>
+            <Button onClick={onCreate} isDisabled={Boolean(!(problemDetails && !file))}>create</Button>
+            <Button onClick={onUpdate} isDisabled={Boolean(!(file && editorContent !== fileContent))}>update</Button>
+          </Flex>
 
-            <Flex justify="center" marginTop={3} gap={2}>
-              <Button onClick={onCopyToClipboard} isDisabled={Boolean(!file)}>copy to clipboard</Button>
-            </Flex>
-          </>
-        }
-        {
-          !isProblemPage &&
-          <>
-            <Container marginTop={5}>
-              <Text>you need to open a LeetCode problem</Text>
-            </Container>
-          </>
-        }
+          <Flex justify="center" marginTop={3} gap={2}>
+            <Button onClick={onCopyToClipboard} isDisabled={Boolean(!file)}>copy to clipboard</Button>
+          </Flex>
+        </>
+      }
+      {
+        !isProblemPage &&
+        <>
+          <Container marginTop={5}>
+            <Text>you need to open a LeetCode problem</Text>
+          </Container>
+        </>
+      }
 
-        <UpsMessage isActive={showUps} />
-      </Container>
-    </ChakraProvider>
+      <UpsMessage isActive={showUps} />
+    </Container>
   )
 }
 

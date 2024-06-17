@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardHeader, ChakraProvider, Container, Heading, Input, StackDivider, VStack, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import OptionsService from "./services/options";
+import OptionsService from "../services/options";
 import { Options, StatusType, statusTypeEmoticons } from "../types";
 import UpsMessage from "../components/UpsMessage";
 
@@ -62,7 +62,7 @@ function OptionsPage() {
     return (
         <ChakraProvider>
             <Container m="auto" mt={10}>
-                <Heading>NeatCode Grabber - Options</Heading>
+                <Heading>Options :D</Heading>
                 {/* content */}
                 {
                     !showUps && <>
@@ -101,7 +101,7 @@ function OptionsPage() {
                                             value={email ?? ""}
                                             onChange={e => setEmail(e.target.value)}
                                             placeholder="your GitHub email"
-                                            type="text"
+                                            type="email"
                                             mt={3}
                                         />
                                     </Container>
