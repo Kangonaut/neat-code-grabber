@@ -16,7 +16,7 @@ export class Utils {
                     const isMatch = (url !== undefined) && pattern.test(url);
                     resolve(isMatch);
                 } else {
-                    reject("no active tab found");
+                    reject("failed to match URL: no active tab found");
                 }
             });
         });
