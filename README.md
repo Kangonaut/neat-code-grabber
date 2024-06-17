@@ -1,7 +1,5 @@
 <div align="center">
-  <div align="center" style="background-color: gray; border-radius: 50%; width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
-    <img src="logo.png" alt="NeatCode Grabber logo" width="192" style="margin: auto"/>
-  </div>
+  <img src="logo-with-glow.png" alt="NeatCode Grabber logo" width="256"/>
 
   # NeatCode Grabber
 
